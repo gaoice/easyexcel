@@ -16,6 +16,7 @@ import java.util.*;
 public class ExcelBuilder {
 
     private static char virtualFieldStart = '#';
+    private static String charset = "utf-8";
 
     public static XSSFWorkbook createWorkbook(SheetInfo sheetInfo) throws Exception {
         XSSFWorkbook workbook = new XSSFWorkbook();
@@ -98,8 +99,9 @@ public class ExcelBuilder {
                 cell = row.createCell(i);
                 cell.setCellValue(columnNames[i]);
                 cell.setCellStyle(sheetStyle.getColumnNamesCellStyle(workbook, i));
-                if (columnNames[i].getBytes().length > columnMaxLength[i]) {
-                    columnMaxLength[i] = columnNames[i].getBytes().length;
+                int valueLength = columnNames[i].getBytes(charset).length;
+                if (valueLength > columnMaxLength[i]) {
+                    columnMaxLength[i] = valueLength;
                 }
             }
         }
@@ -194,7 +196,7 @@ public class ExcelBuilder {
                         cell.setCellValue(value);
                     }
                     cell.setCellStyle(sheetStyle.getListCellStyle(workbook, i, j, o));
-                    int valueLength = value.getBytes().length;
+                    int valueLength = value.getBytes(charset).length;
                     if (valueLength > columnMaxLength[j]) {
                         columnMaxLength[j] = valueLength;
                     }
@@ -212,7 +214,7 @@ public class ExcelBuilder {
                 cell = row.createCell(i);
                 cell.setCellValue(value);
                 cell.setCellStyle(sheetStyle.getColumnCountCellStyle(workbook, i, countResults[i]));
-                int valueLength = value.getBytes().length;
+                int valueLength = value.getBytes(charset).length;
                 if (valueLength > columnMaxLength[i]) {
                     columnMaxLength[i] = valueLength;
                 }
