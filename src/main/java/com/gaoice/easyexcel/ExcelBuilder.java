@@ -46,6 +46,16 @@ public class ExcelBuilder {
         return out;
     }
 
+    public static void writeOutputStream(SheetInfo sheetInfo, OutputStream out) throws Exception {
+        XSSFWorkbook workbook = createWorkbook(sheetInfo);
+        workbook.write(out);
+    }
+
+    public static void writeOutputStream(List<SheetInfo> sheetInfos, OutputStream out) throws Exception {
+        XSSFWorkbook workbook = createWorkbook(sheetInfos);
+        workbook.write(out);
+    }
+
     public static XSSFSheet createSheet(XSSFWorkbook workbook, SheetInfo sheetInfo) throws Exception {
         String sheetName = sheetInfo.getSheetName();
         String title = sheetInfo.getTitle();
