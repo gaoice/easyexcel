@@ -15,8 +15,17 @@ Excel快速生成工具
 String sheetName = "sheet name";
 String[] columnNames = {"姓名", "身份证号", "性别", ...};
 String[] classFieldNames = {"name", "idcard", "sex", ...};
-XSSFWorkbook workbook = ExcelBuilder.createWorkbook(new SheetInfo(sheetName, columnNames, classFieldNames, studentList));
+XSSFWorkbook workbook = ExcelBuilder.createWorkbook(
+    new SheetInfo(sheetName, columnNames, classFieldNames, studentList));
 ```
 
-使用方法详见test目录。
+web下直接写入HttpServletResponse的OutputStream中：
+
+```java
+ExcelBuilder.writeOutputStream(
+    new SheetInfo(sheetName, columnNames, classFieldNames, studentList), 
+    response.getOutputStream());
+```
+
+使用方法详见 [test目录](https://github.com/gaoice/easyexcel/blob/master/src/test/java/com/gaoice/easyexcel/test/ExcelBuilderTest.java) 。
 
