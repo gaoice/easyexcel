@@ -1,39 +1,39 @@
 package com.gaoice.easyexcel.style;
 
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 /**
  * 对标题 列名 统计结果 字体加粗
  */
 public class BoldSheetStyle extends DefaultSheetStyle {
     @Override
-    public XSSFCellStyle getTitleCellStyle(XSSFWorkbook workbook) {
+    public CellStyle getTitleCellStyle(SXSSFWorkbook workbook) {
         if (titleCellStyle != null) {
             return titleCellStyle;
         }
-        XSSFCellStyle style = super.getTitleCellStyle(workbook);
-        style.getFont().setBold(true);
+        CellStyle style = super.getTitleCellStyle(workbook);
+        workbook.getFontAt(style.getFontIndexAsInt()).setBold(true);
         return style;
     }
 
     @Override
-    public XSSFCellStyle getColumnNamesCellStyle(XSSFWorkbook workbook, int index) {
+    public CellStyle getColumnNamesCellStyle(SXSSFWorkbook workbook, int index) {
         if (columnNamesCellStyle != null) {
             return columnNamesCellStyle;
         }
-        XSSFCellStyle style = super.getColumnNamesCellStyle(workbook, index);
-        style.getFont().setBold(true);
+        CellStyle style = super.getColumnNamesCellStyle(workbook, index);
+        workbook.getFontAt(style.getFontIndexAsInt()).setBold(true);
         return style;
     }
 
     @Override
-    public XSSFCellStyle getColumnCountCellStyle(XSSFWorkbook workbook, int columnIndex, Object v) {
+    public CellStyle getColumnCountCellStyle(SXSSFWorkbook workbook, int columnIndex, Object v) {
         if (columnCountCellStyle != null) {
             return columnCountCellStyle;
         }
-        XSSFCellStyle style = super.getColumnCountCellStyle(workbook, columnIndex, v);
-        style.getFont().setBold(true);
+        CellStyle style = super.getColumnCountCellStyle(workbook, columnIndex, v);
+        workbook.getFontAt(style.getFontIndexAsInt()).setBold(true);
         return style;
     }
 }

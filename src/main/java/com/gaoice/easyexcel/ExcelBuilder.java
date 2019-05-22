@@ -5,7 +5,10 @@ import com.gaoice.easyexcel.data.Counter;
 import com.gaoice.easyexcel.style.DefaultSheetStyle;
 import com.gaoice.easyexcel.style.SheetStyle;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.*;
+import org.apache.poi.xssf.streaming.SXSSFCell;
+import org.apache.poi.xssf.streaming.SXSSFRow;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -18,14 +21,14 @@ public class ExcelBuilder {
     private static char virtualFieldStart = '#';
     private static String charset = "utf-8";
 
-    public static XSSFWorkbook createWorkbook(SheetInfo sheetInfo) throws Exception {
-        XSSFWorkbook workbook = new XSSFWorkbook();
+    public static SXSSFWorkbook createWorkbook(SheetInfo sheetInfo) throws Exception {
+        SXSSFWorkbook workbook = new SXSSFWorkbook();
         createSheet(workbook, sheetInfo);
         return workbook;
     }
 
-    public static XSSFWorkbook createWorkbook(List<SheetInfo> sheetInfos) throws Exception {
-        XSSFWorkbook workbook = new XSSFWorkbook();
+    public static SXSSFWorkbook createWorkbook(List<SheetInfo> sheetInfos) throws Exception {
+        SXSSFWorkbook workbook = new SXSSFWorkbook();
         for (SheetInfo sheetInfo : sheetInfos) {
             createSheet(workbook, sheetInfo);
         }
@@ -33,30 +36,30 @@ public class ExcelBuilder {
     }
 
     public static OutputStream createOutputStream(SheetInfo sheetInfo) throws Exception {
-        XSSFWorkbook workbook = createWorkbook(sheetInfo);
+        SXSSFWorkbook workbook = createWorkbook(sheetInfo);
         OutputStream out = new ByteArrayOutputStream();
         workbook.write(out);
         return out;
     }
 
     public static OutputStream createOutputStream(List<SheetInfo> sheetInfos) throws Exception {
-        XSSFWorkbook workbook = createWorkbook(sheetInfos);
+        SXSSFWorkbook workbook = createWorkbook(sheetInfos);
         OutputStream out = new ByteArrayOutputStream();
         workbook.write(out);
         return out;
     }
 
     public static void writeOutputStream(SheetInfo sheetInfo, OutputStream out) throws Exception {
-        XSSFWorkbook workbook = createWorkbook(sheetInfo);
+        SXSSFWorkbook workbook = createWorkbook(sheetInfo);
         workbook.write(out);
     }
 
     public static void writeOutputStream(List<SheetInfo> sheetInfos, OutputStream out) throws Exception {
-        XSSFWorkbook workbook = createWorkbook(sheetInfos);
+        SXSSFWorkbook workbook = createWorkbook(sheetInfos);
         workbook.write(out);
     }
 
-    public static XSSFSheet createSheet(XSSFWorkbook workbook, SheetInfo sheetInfo) throws Exception {
+    public static SXSSFSheet createSheet(SXSSFWorkbook workbook, SheetInfo sheetInfo) throws Exception {
         String sheetName = sheetInfo.getSheetName();
         String title = sheetInfo.getTitle();
         String[] columnNames = sheetInfo.getColumnNames();
@@ -84,9 +87,9 @@ public class ExcelBuilder {
 
         int nextRowNum = 0;
 
-        XSSFSheet sheet = workbook.createSheet(sheetName);
-        XSSFRow row;
-        XSSFCell cell;
+        SXSSFSheet sheet = workbook.createSheet(sheetName);
+        SXSSFRow row;
+        SXSSFCell cell;
         /*
          * title
          */

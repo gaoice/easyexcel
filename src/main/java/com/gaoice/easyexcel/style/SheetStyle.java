@@ -1,17 +1,17 @@
 package com.gaoice.easyexcel.style;
 
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 public interface SheetStyle {
 
-    XSSFCellStyle getTitleCellStyle(XSSFWorkbook workbook);
+    CellStyle getTitleCellStyle(SXSSFWorkbook workbook);
 
-    XSSFCellStyle getColumnNamesCellStyle(XSSFWorkbook workbook, int columnIndex);
+    CellStyle getColumnNamesCellStyle(SXSSFWorkbook workbook, int columnIndex);
 
-    XSSFCellStyle getListCellStyle(XSSFWorkbook workbook, int listIndex, int columnIndex, Object v);
+    CellStyle getListCellStyle(SXSSFWorkbook workbook, int listIndex, int columnIndex, Object v);
 
-    XSSFCellStyle getColumnCountCellStyle(XSSFWorkbook workbook, int columnIndex, Object v);
+    CellStyle getColumnCountCellStyle(SXSSFWorkbook workbook, int columnIndex, Object v);
 
     /**
      * 列最大字节长度处理

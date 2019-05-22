@@ -1,11 +1,7 @@
 package com.gaoice.easyexcel.style;
 
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 public class DefaultSheetStyle implements SheetStyle {
 
@@ -13,25 +9,25 @@ public class DefaultSheetStyle implements SheetStyle {
      * 对style缓存
      * Workbook中创建单元格样式个数是有限制的
      */
-    protected XSSFCellStyle titleCellStyle;
-    protected XSSFCellStyle columnNamesCellStyle;
-    protected XSSFCellStyle listCellStyle;
-    protected XSSFCellStyle columnCountCellStyle;
+    protected CellStyle titleCellStyle;
+    protected CellStyle columnNamesCellStyle;
+    protected CellStyle listCellStyle;
+    protected CellStyle columnCountCellStyle;
 
     @Override
-    public XSSFCellStyle getTitleCellStyle(XSSFWorkbook workbook) {
+    public CellStyle getTitleCellStyle(SXSSFWorkbook workbook) {
         if (titleCellStyle != null) {
             return titleCellStyle;
         }
         titleCellStyle = newSimpleStyle(workbook);
         titleCellStyle.setWrapText(false);
-        Font font = titleCellStyle.getFont();
+        Font font = workbook.getFontAt(titleCellStyle.getFontIndexAsInt());
         font.setFontHeightInPoints((short) 22);
         return titleCellStyle;
     }
 
     @Override
-    public XSSFCellStyle getColumnNamesCellStyle(XSSFWorkbook workbook, int index) {
+    public CellStyle getColumnNamesCellStyle(SXSSFWorkbook workbook, int index) {
         if (columnNamesCellStyle != null) {
             return columnNamesCellStyle;
         }
@@ -40,7 +36,7 @@ public class DefaultSheetStyle implements SheetStyle {
     }
 
     @Override
-    public XSSFCellStyle getListCellStyle(XSSFWorkbook workbook, int listIndex, int columnIndex, Object v) {
+    public CellStyle getListCellStyle(SXSSFWorkbook workbook, int listIndex, int columnIndex, Object v) {
         if (listCellStyle != null) {
             return listCellStyle;
         }
@@ -49,7 +45,7 @@ public class DefaultSheetStyle implements SheetStyle {
     }
 
     @Override
-    public XSSFCellStyle getColumnCountCellStyle(XSSFWorkbook workbook, int columnIndex, Object v) {
+    public CellStyle getColumnCountCellStyle(SXSSFWorkbook workbook, int columnIndex, Object v) {
         if (columnCountCellStyle != null) {
             return columnCountCellStyle;
         }
@@ -79,8 +75,8 @@ public class DefaultSheetStyle implements SheetStyle {
         columnCountCellStyle = null;
     }
 
-    public XSSFCellStyle newSimpleStyle(XSSFWorkbook workbook) {
-        XSSFCellStyle style = workbook.createCellStyle();
+    public CellStyle newSimpleStyle(SXSSFWorkbook workbook) {
+        CellStyle style = workbook.createCellStyle();
         style.setAlignment(HorizontalAlignment.CENTER);
         style.setVerticalAlignment(VerticalAlignment.CENTER);
         style.setBorderLeft(BorderStyle.THIN);

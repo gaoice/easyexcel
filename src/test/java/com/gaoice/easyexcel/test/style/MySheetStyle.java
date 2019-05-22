@@ -2,13 +2,13 @@ package com.gaoice.easyexcel.test.style;
 
 import com.gaoice.easyexcel.SheetInfo;
 import com.gaoice.easyexcel.style.BoldSheetStyle;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 
 public class MySheetStyle extends BoldSheetStyle {
-    private XSSFCellStyle warnStyle;
+    private CellStyle warnStyle;
     private SheetInfo sheetInfo;
 
     /**
@@ -28,7 +28,7 @@ public class MySheetStyle extends BoldSheetStyle {
      * @return
      */
     @Override
-    public XSSFCellStyle getListCellStyle(XSSFWorkbook workbook, int listIndex, int columnIndex, Object v) {
+    public CellStyle getListCellStyle(SXSSFWorkbook workbook, int listIndex, int columnIndex, Object v) {
         String[] names = sheetInfo.getClassFieldNames();
         if ((names[columnIndex].equals("grade.chineseGrade")
                 || names[columnIndex].equals("grade.mathGrade")
@@ -36,7 +36,7 @@ public class MySheetStyle extends BoldSheetStyle {
                 && (Double.valueOf(v.toString()) < 60)) {
             if (warnStyle == null) {
                 warnStyle = newSimpleStyle(workbook);
-                Font font = warnStyle.getFont();
+                Font font = workbook.getFontAt(warnStyle.getFontIndexAsInt());
                 //(short) 10代表红色
                 font.setColor((short) 10);
                 warnStyle.setWrapText(false);

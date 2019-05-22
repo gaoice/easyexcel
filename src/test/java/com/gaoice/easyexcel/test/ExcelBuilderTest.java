@@ -9,7 +9,7 @@ import com.gaoice.easyexcel.test.entity.Grade;
 import com.gaoice.easyexcel.test.entity.SexCountResult;
 import com.gaoice.easyexcel.test.entity.Student;
 import com.gaoice.easyexcel.test.style.MySheetStyle;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,7 +29,7 @@ public class ExcelBuilderTest {
     @Before
     public void initList() {
         studentList = new ArrayList<>();
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 10000; i++) {
             studentList.add(genStudent(i));
         }
     }
@@ -49,7 +49,7 @@ public class ExcelBuilderTest {
         String[] classFieldNames = {"name", "cardId", "sex", "birthday", "grade.chineseGrade", "grade.mathGrade", "grade.englishGrade"};
         SheetInfo sheetInfo = new SheetInfo(sheetName, columnNames, classFieldNames, studentList);
         //通过 sheetInfo 创建 workbook
-        XSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfo);
+        SXSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfo);
         /*
          *写入文件
          */
@@ -78,7 +78,7 @@ public class ExcelBuilderTest {
         sheetInfo.putConverter("sex", sexConverter);
         sheetInfo.putConverter("birthday", DefaultHandlers.dateConverter);
 
-        XSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfo);
+        SXSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfo);
         FileOutputStream file = new FileOutputStream("simpleConverter.xlsx");
         workbook.write(file);
         file.close();
@@ -108,7 +108,7 @@ public class ExcelBuilderTest {
         sheetInfo.putConverter("#order", DefaultHandlers.orderConverter);
         sheetInfo.putConverter("#countGrade", countGradeConverter);
 
-        XSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfo);
+        SXSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfo);
         FileOutputStream file = new FileOutputStream("simpleConverterVirtual.xlsx");
         workbook.write(file);
         file.close();
@@ -140,7 +140,7 @@ public class ExcelBuilderTest {
         sheetInfo.putCounter("#order", DefaultHandlers.orderCounter);
         sheetInfo.putCounter("sex", sexCounter);
 
-        XSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfo);
+        SXSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfo);
         FileOutputStream file = new FileOutputStream("simpleConverterVirtualCounter.xlsx");
         workbook.write(file);
         file.close();
@@ -176,7 +176,7 @@ public class ExcelBuilderTest {
          */
         sheetInfo.setSheetStyle(new MySheetStyle(sheetInfo));
 
-        XSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfo);
+        SXSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfo);
         FileOutputStream file = new FileOutputStream("sheetStyle.xlsx");
         workbook.write(file);
         file.close();
@@ -214,7 +214,7 @@ public class ExcelBuilderTest {
         sheetInfos.add(sheetInfo1);
         sheetInfos.add(sheetInfo2);
 
-        XSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfos);
+        SXSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfos);
         FileOutputStream file = new FileOutputStream("twoSheet.xlsx");
         workbook.write(file);
         file.close();
