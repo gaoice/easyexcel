@@ -138,9 +138,7 @@ public class ExcelBuilder {
                             Field f = c.getDeclaredField(classFieldNameBunch.get(j));
                             f.setAccessible(true);
                             classFieldBunch.add(f);
-                            if (j != (classFieldNameBunch.size() - 1)) {
-                                c = Class.forName(f.getGenericType().getTypeName());
-                            }
+                            c = f.getType();
                         }
                     }
                     classFieldBunchs.add(classFieldBunch);
