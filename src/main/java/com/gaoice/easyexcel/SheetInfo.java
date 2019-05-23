@@ -51,7 +51,7 @@ public class SheetInfo {
      * @param classFieldName 字段名
      * @param dictionary     数据字典
      */
-    public void putConverter(String classFieldName, Map<Object, Object> dictionary) {
+    public SheetInfo putConverter(String classFieldName, Map<Object, Object> dictionary) {
         if (classFieldName == null || dictionary == null) {
             throw new IllegalArgumentException("param shall not be null");
         }
@@ -63,6 +63,7 @@ public class SheetInfo {
         } else {
             throw new IllegalArgumentException("no such classFieldName, please put in array classFieldNames");
         }
+        return this;
     }
 
     /**
@@ -71,7 +72,7 @@ public class SheetInfo {
      * @param classFieldName 字段名
      * @param converter      转换器
      */
-    public void putConverter(String classFieldName, Converter converter) {
+    public SheetInfo putConverter(String classFieldName, Converter converter) {
         if (classFieldName == null || converter == null) {
             throw new IllegalArgumentException("param shall not be null");
         }
@@ -83,6 +84,7 @@ public class SheetInfo {
         } else {
             throw new IllegalArgumentException("no such classFieldName, please put in array classFieldNames");
         }
+        return this;
     }
 
     /**
@@ -91,7 +93,7 @@ public class SheetInfo {
      * @param classFieldName 字段名
      * @param counter        计数器
      */
-    public void putCounter(String classFieldName, Counter counter) {
+    public SheetInfo putCounter(String classFieldName, Counter counter) {
         if (classFieldName == null) {
             throw new IllegalArgumentException("classFieldName shall not be null");
         }
@@ -103,6 +105,7 @@ public class SheetInfo {
         } else {
             throw new IllegalArgumentException("no such classFieldName, please put in array classFieldNames");
         }
+        return this;
     }
 
     private boolean isAtClassFieldNames(String classFieldName) {

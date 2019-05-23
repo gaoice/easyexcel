@@ -10,7 +10,6 @@ import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
-import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -35,28 +34,16 @@ public class ExcelBuilder {
         return workbook;
     }
 
-    public static OutputStream createOutputStream(SheetInfo sheetInfo) throws Exception {
-        SXSSFWorkbook workbook = createWorkbook(sheetInfo);
-        OutputStream out = new ByteArrayOutputStream();
-        workbook.write(out);
-        return out;
-    }
-
-    public static OutputStream createOutputStream(List<SheetInfo> sheetInfos) throws Exception {
-        SXSSFWorkbook workbook = createWorkbook(sheetInfos);
-        OutputStream out = new ByteArrayOutputStream();
-        workbook.write(out);
-        return out;
-    }
-
     public static void writeOutputStream(SheetInfo sheetInfo, OutputStream out) throws Exception {
         SXSSFWorkbook workbook = createWorkbook(sheetInfo);
         workbook.write(out);
+        workbook.dispose();
     }
 
     public static void writeOutputStream(List<SheetInfo> sheetInfos, OutputStream out) throws Exception {
         SXSSFWorkbook workbook = createWorkbook(sheetInfos);
         workbook.write(out);
+        workbook.dispose();
     }
 
     public static SXSSFSheet createSheet(SXSSFWorkbook workbook, SheetInfo sheetInfo) throws Exception {

@@ -20,7 +20,6 @@ import java.util.List;
 
 public class ExcelBuilderTest {
 
-
     List<Student> studentList;
 
     /**
@@ -48,14 +47,22 @@ public class ExcelBuilderTest {
         String[] columnNames = {"姓名", "身份证号", "性别", "出生日期", "语文分数", "数学分数", "英语分数"};
         String[] classFieldNames = {"name", "cardId", "sex", "birthday", "grade.chineseGrade", "grade.mathGrade", "grade.englishGrade"};
         SheetInfo sheetInfo = new SheetInfo(sheetName, columnNames, classFieldNames, studentList);
+        /*
+         * 通过workbook写入文件
+         */
         //通过 sheetInfo 创建 workbook
         SXSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfo);
-        /*
-         *写入文件
-         */
         FileOutputStream file = new FileOutputStream("simple.xlsx");
         workbook.write(file);
         file.close();
+        //通过workbook需要删除临时文件
+        workbook.dispose();
+        /*
+         * 直接写入文件
+         */
+        //FileOutputStream file = new FileOutputStream("simple.xlsx");
+        //ExcelBuilder.writeOutputStream(sheetInfo, file);
+        //file.close();
     }
 
     /**
@@ -75,13 +82,16 @@ public class ExcelBuilderTest {
         /*
          * 转换器
          */
+        //性别从 0|1 转换为 女生|男生
         sheetInfo.putConverter("sex", sexConverter);
+        //日期格式转换为 yyyy-MM-dd
         sheetInfo.putConverter("birthday", DefaultHandlers.dateConverter);
 
         SXSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfo);
         FileOutputStream file = new FileOutputStream("simpleConverter.xlsx");
         workbook.write(file);
         file.close();
+        workbook.dispose();
     }
 
     /**
@@ -100,18 +110,18 @@ public class ExcelBuilderTest {
         /*
          * 转换器
          */
-        sheetInfo.putConverter("sex", sexConverter);
-        sheetInfo.putConverter("birthday", DefaultHandlers.dateConverter);
-        /*
-         * 虚拟字段转换器
-         */
+        sheetInfo.putConverter("sex", sexConverter)
+                .putConverter("birthday", DefaultHandlers.dateConverter);
+        //虚拟字段 #order，通过转换器生成序号
         sheetInfo.putConverter("#order", DefaultHandlers.orderConverter);
+        //虚拟字段 #countGrade，通过转换器生成总分数
         sheetInfo.putConverter("#countGrade", countGradeConverter);
 
         SXSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfo);
         FileOutputStream file = new FileOutputStream("simpleConverterVirtual.xlsx");
         workbook.write(file);
         file.close();
+        workbook.dispose();
     }
 
     /**
@@ -130,20 +140,23 @@ public class ExcelBuilderTest {
         /*
          * 转换器
          */
-        sheetInfo.putConverter("sex", sexConverter);
-        sheetInfo.putConverter("birthday", DefaultHandlers.dateConverter);
-        sheetInfo.putConverter("#order", DefaultHandlers.orderConverter);
-        sheetInfo.putConverter("#countGrade", countGradeConverter);
+        sheetInfo.putConverter("sex", sexConverter)
+                .putConverter("birthday", DefaultHandlers.dateConverter)
+                .putConverter("#order", DefaultHandlers.orderConverter)
+                .putConverter("#countGrade", countGradeConverter);
         /*
          * 统计器
          */
+        //序号列，统计结果显示“合计”字样
         sheetInfo.putCounter("#order", DefaultHandlers.orderCounter);
+        //统计男女人数
         sheetInfo.putCounter("sex", sexCounter);
 
         SXSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfo);
         FileOutputStream file = new FileOutputStream("simpleConverterVirtualCounter.xlsx");
         workbook.write(file);
         file.close();
+        workbook.dispose();
     }
 
     /**
@@ -160,17 +173,14 @@ public class ExcelBuilderTest {
         String[] classFieldNames = {"#order", "name", "cardId", "sex", "birthday", "grade.chineseGrade", "grade.mathGrade", "grade.englishGrade", "#countGrade"};
         SheetInfo sheetInfo = new SheetInfo(sheetName, title, columnNames, classFieldNames, studentList);
         /*
-         * 转换器
+         * 转换器 统计器
          */
-        sheetInfo.putConverter("sex", sexConverter);
-        sheetInfo.putConverter("birthday", DefaultHandlers.dateConverter);
-        sheetInfo.putConverter("#order", DefaultHandlers.orderConverter);
-        sheetInfo.putConverter("#countGrade", countGradeConverter);
-        /*
-         * 统计器
-         */
-        sheetInfo.putCounter("#order", DefaultHandlers.orderCounter);
-        sheetInfo.putCounter("sex", sexCounter);
+        sheetInfo.putConverter("sex", sexConverter)
+                .putConverter("birthday", DefaultHandlers.dateConverter)
+                .putConverter("#order", DefaultHandlers.orderConverter)
+                .putConverter("#countGrade", countGradeConverter)
+                .putCounter("#order", DefaultHandlers.orderCounter)
+                .putCounter("sex", sexCounter);
         /*
          * 自定义样式，对分数列小于60分的分数设置为红色字体
          */
@@ -180,6 +190,7 @@ public class ExcelBuilderTest {
         FileOutputStream file = new FileOutputStream("sheetStyle.xlsx");
         workbook.write(file);
         file.close();
+        workbook.dispose();
     }
 
     /**
@@ -194,21 +205,21 @@ public class ExcelBuilderTest {
         String[] columnNames1 = {"序号", "姓名", "身份证号", "性别", "出生日期"};
         String[] classFieldNames1 = {"#order", "name", "cardId", "sex", "birthday"};
         SheetInfo sheetInfo1 = new SheetInfo(sheetName1, title1, columnNames1, classFieldNames1, studentList);
-        sheetInfo1.putConverter("#order", DefaultHandlers.orderConverter);
-        sheetInfo1.putConverter("sex", sexConverter);
-        sheetInfo1.putConverter("birthday", DefaultHandlers.dateConverter);
-        sheetInfo1.putCounter("#order", DefaultHandlers.orderCounter);
-        sheetInfo1.putCounter("sex", sexCounter);
-        sheetInfo1.setSheetStyle(new MySheetStyle(sheetInfo1));
+        sheetInfo1.putConverter("#order", DefaultHandlers.orderConverter)
+                .putConverter("sex", sexConverter)
+                .putConverter("birthday", DefaultHandlers.dateConverter)
+                .putCounter("#order", DefaultHandlers.orderCounter)
+                .putCounter("sex", sexCounter)
+                .setSheetStyle(new MySheetStyle(sheetInfo1));
 
         String sheetName2 = "学生分数表";
         String title2 = "学生分数表";
         String[] columnNames2 = {"序号", "姓名", "语文分数", "数学分数", "英语分数", "总分数"};
         String[] classFieldNames2 = {"#order", "name", "grade.chineseGrade", "grade.mathGrade", "grade.englishGrade", "#countGrade"};
         SheetInfo sheetInfo2 = new SheetInfo(sheetName2, title2, columnNames2, classFieldNames2, studentList);
-        sheetInfo2.putConverter("#order", DefaultHandlers.orderConverter);
-        sheetInfo2.putConverter("#countGrade", countGradeConverter);
-        sheetInfo2.setSheetStyle(new MySheetStyle(sheetInfo2));
+        sheetInfo2.putConverter("#order", DefaultHandlers.orderConverter)
+                .putConverter("#countGrade", countGradeConverter)
+                .setSheetStyle(new MySheetStyle(sheetInfo2));
 
         List<SheetInfo> sheetInfos = new ArrayList<>();
         sheetInfos.add(sheetInfo1);
@@ -218,6 +229,7 @@ public class ExcelBuilderTest {
         FileOutputStream file = new FileOutputStream("twoSheet.xlsx");
         workbook.write(file);
         file.close();
+        workbook.dispose();
     }
 
     /**
