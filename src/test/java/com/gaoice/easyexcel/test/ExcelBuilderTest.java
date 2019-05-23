@@ -14,9 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class ExcelBuilderTest {
 
@@ -84,6 +82,12 @@ public class ExcelBuilderTest {
          */
         //性别从 0|1 转换为 女生|男生
         sheetInfo.putConverter("sex", sexConverter);
+        //性别转换也可以使用Map，Map适合数据简单的映射，Converter适合对值进行复杂操作
+        //Map sexMap = new HashMap<>();
+        //sexMap.put(1, "男生");
+        //sexMap.put(0, "女生");
+        //sheetInfo.putConverter("sex", sexMap);
+
         //日期格式转换为 yyyy-MM-dd
         sheetInfo.putConverter("birthday", DefaultHandlers.dateConverter);
 
@@ -234,6 +238,9 @@ public class ExcelBuilderTest {
 
     /**
      * 性别Converter
+     * value是Converter所属字段所对应的值
+     * listIndex是value所属对象所在list的index
+     * columnIndex是当前字段名所在classFieldNames的index
      */
     static Converter sexConverter = (SheetInfo sheetInfo, Object value, int listIndex, int columnIndex) -> {
         /*
@@ -263,6 +270,7 @@ public class ExcelBuilderTest {
     };
     /**
      * 性别统计 Counter
+     * result 保存了当前的合计结果，使用自定义类型要注意重写toString方法，以便在统计行显示自己想要的结果
      */
     static Counter sexCounter = (SheetInfo sheetInfo, Object value, int listIndex, int columnIndex, Object result) -> {
         if (result == null) {

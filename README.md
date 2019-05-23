@@ -9,13 +9,13 @@ Excel快速生成工具
 
 `Student{name, idcard, sex, ...}`
 
-生成XSSFWorkbook：
+生成SXSSFWorkbook：
 
 ```java
 String sheetName = "sheet name";
 String[] columnNames = {"姓名", "身份证号", "性别", ...};
 String[] classFieldNames = {"name", "idcard", "sex", ...};
-XSSFWorkbook workbook = ExcelBuilder.createWorkbook(
+SXSSFWorkbook workbook = ExcelBuilder.createWorkbook(
     new SheetInfo(sheetName, columnNames, classFieldNames, studentList));
 ```
 
@@ -27,5 +27,12 @@ ExcelBuilder.writeOutputStream(
     response.getOutputStream());
 ```
 
-使用方法详见 [test目录](https://github.com/gaoice/easyexcel/blob/master/src/test/java/com/gaoice/easyexcel/test/ExcelBuilderTest.java) 。
+如果sex字段是int类型的，我们可以为sex字段添加一个Converter（Lambda表达式）在构建Excel时转换为中文：
+
+```java
+sheetInfo.putConverter("sex", 
+	(sheetInfo1, o, listIndex, columnIndex) -> o.equals(1) ? "男生" : "女生");
+```
+
+完整的使用方法示例详见 [Test文件](https://github.com/gaoice/easyexcel/blob/master/src/test/java/com/gaoice/easyexcel/test/ExcelBuilderTest.java) 。
 
