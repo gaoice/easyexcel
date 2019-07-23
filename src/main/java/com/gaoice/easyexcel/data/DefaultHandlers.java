@@ -74,8 +74,10 @@ public class DefaultHandlers {
             if (o instanceof Timestamp) {
                 String s = o.toString();
                 int index;
-                if ((index = s.indexOf(".")) > -1)
+                char dot = '.';
+                if ((index = s.indexOf(dot)) > -1) {
                     s = s.substring(0, index);
+                }
                 return s;
             }
             return o;
