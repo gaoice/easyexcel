@@ -5,8 +5,8 @@ import com.gaoice.easyexcel.SheetInfo;
 /**
  * 列 计数/统计 接口
  *
- * @param <P>
- * @param <R>
+ * @param <P> 单元格值类型
+ * @param <R> 统计结果类型
  */
 public interface Counter<P, R> {
     /**

@@ -17,8 +17,8 @@ import java.util.*;
 
 public class ExcelBuilder {
 
-    private static char virtualFieldStart = '#';
-    private static String charset = "utf-8";
+    private static final char virtualFieldStart = '#';
+    private static final String charset = "utf-8";
 
     public static SXSSFWorkbook createWorkbook(SheetInfo sheetInfo) throws Exception {
         SXSSFWorkbook workbook = new SXSSFWorkbook();
@@ -121,8 +121,8 @@ public class ExcelBuilder {
                     List<Field> classFieldBunch = new ArrayList<>();
                     String firstClassFieldName = classFieldNameBunch.get(0);
                     if (!firstClassFieldName.equals("") && firstClassFieldName.charAt(0) != virtualFieldStart) {
-                        for (int j = 0; j < classFieldNameBunch.size(); j++) {
-                            Field f = c.getDeclaredField(classFieldNameBunch.get(j));
+                        for (String classFieldName : classFieldNameBunch) {
+                            Field f = c.getDeclaredField(classFieldName);
                             f.setAccessible(true);
                             classFieldBunch.add(f);
                             c = f.getType();
