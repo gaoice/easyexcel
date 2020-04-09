@@ -7,13 +7,27 @@ Excel快速生成工具
 
 
 
+## 使用
+
+`Maven`
+
+```xml
+<dependency>
+    <groupId>com.gaoice</groupId>
+    <artifactId>easyexcel-spring-boot-starter</artifactId>
+    <version>1.0</version>
+</dependency>
+```
+
+
+
 ## Starter
 
 现在可以在 Spring Boot 中快速使用：[easyexcel-spring-boot-starter](https://github.com/gaoice/easyexcel-spring-boot-starter)
 
 
 
-## 使用示例
+## 示例
 
 实体类：
 
