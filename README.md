@@ -14,7 +14,7 @@ Excel快速生成工具
 ```xml
 <dependency>
     <groupId>com.gaoice</groupId>
-    <artifactId>easyexcel-spring-boot-starter</artifactId>
+    <artifactId>easyexcel</artifactId>
     <version>1.0</version>
 </dependency>
 ```
