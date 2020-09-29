@@ -27,6 +27,13 @@ Excel快速生成工具
 
 
 
+## 新版本
+
+- v 1.1，支持 List<Map<?,?>> 类型，支持链式调用，详见 [MapListTests.java](https://github.com/gaoice/easyexcel/blob/master/src/test/java/com/gaoice/easyexcel/test/MapListTests.java) 。
+
+
+
+
 ## 示例
 
 实体类：
@@ -58,5 +65,4 @@ sheetInfo.putConverter("sex",
 	(sheetInfo1, o, listIndex, columnIndex) -> o.equals(1) ? "男生" : "女生");
 ```
 
-完整的使用方法示例详见 [Test文件](https://github.com/gaoice/easyexcel/blob/master/src/test/java/com/gaoice/easyexcel/test/ExcelBuilderTest.java) 。
-
+完整的使用方法示例详见 [Test文件](https://github.com/gaoice/easyexcel/blob/master/src/test/java/com/gaoice/easyexcel/test/ExcelBuilderTests.java) 。

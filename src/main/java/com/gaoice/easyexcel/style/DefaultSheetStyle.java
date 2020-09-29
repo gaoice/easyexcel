@@ -3,11 +3,16 @@ package com.gaoice.easyexcel.style;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
+/**
+ * 默认的简单样式
+ *
+ * @author gaoice
+ */
 public class DefaultSheetStyle implements SheetStyle {
 
     /**
-     * 对style缓存
-     * Workbook中创建单元格样式个数是有限制的
+     * 对 style 缓存
+     * Workbook 中创建单元格样式个数是有限制的
      */
     protected CellStyle titleCellStyle;
     protected CellStyle columnNamesCellStyle;
@@ -56,10 +61,10 @@ public class DefaultSheetStyle implements SheetStyle {
     /**
      * 最大值255
      *
-     * @param columnMaxBytesLength
+     * @param columnMaxBytesLength 每列单元格最长的字节长度
      */
     @Override
-    public void columnMaxBytesLengthHandler(int[] columnMaxBytesLength) {
+    public void handleColumnMaxBytesLength(int[] columnMaxBytesLength) {
         for (int i = 0; i < columnMaxBytesLength.length; i++) {
             if (columnMaxBytesLength[i] > 255) {
                 columnMaxBytesLength[i] = 255;

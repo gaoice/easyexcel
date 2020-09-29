@@ -9,14 +9,13 @@ import com.gaoice.easyexcel.test.entity.Grade;
 import com.gaoice.easyexcel.test.entity.SexCountResult;
 import com.gaoice.easyexcel.test.entity.Student;
 import com.gaoice.easyexcel.test.style.MySheetStyle;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.FileOutputStream;
 import java.util.*;
 
-public class ExcelBuilderTest {
+public class ExcelBuilderTests {
 
     List<Student> studentList;
 
@@ -33,8 +32,6 @@ public class ExcelBuilderTest {
 
     /**
      * 最简单的使用
-     *
-     * @throws Exception
      */
     @Test
     public void simple() throws Exception {
@@ -46,29 +43,17 @@ public class ExcelBuilderTest {
         String[] classFieldNames = {"name", "cardId", "sex", "birthday", "grade.chineseGrade", "grade.mathGrade", "grade.englishGrade"};
         SheetInfo sheetInfo = new SheetInfo(sheetName, columnNames, classFieldNames, studentList);
         /*
-         * 通过workbook写入文件
-         */
-        //通过 sheetInfo 创建 workbook
-        SXSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfo);
-        FileOutputStream file = new FileOutputStream("simple.xlsx");
-        workbook.write(file);
-        file.close();
-        //通过workbook需要删除临时文件
-        workbook.dispose();
-        /*
          * 直接写入文件
          */
-        //FileOutputStream file = new FileOutputStream("simple.xlsx");
-        //ExcelBuilder.writeOutputStream(sheetInfo, file);
-        //file.close();
+        FileOutputStream file = new FileOutputStream("simple.xlsx");
+        ExcelBuilder.writeOutputStream(sheetInfo, file);
+        file.close();
     }
 
     /**
      * 在simple的基础上
      * 添加标题 title
      * 使用Converter，对性别进行转换，对日期进行格式化
-     *
-     * @throws Exception
      */
     @Test
     public void simpleConverter() throws Exception {
@@ -80,29 +65,22 @@ public class ExcelBuilderTest {
         /*
          * 转换器
          */
-        //性别从 0|1 转换为 女生|男生
-        sheetInfo.putConverter("sex", sexConverter);
-        //性别转换也可以使用Map，Map适合数据简单的映射，Converter适合对值进行复杂操作
-        //Map sexMap = new HashMap<>();
-        //sexMap.put(1, "男生");
-        //sexMap.put(0, "女生");
-        //sheetInfo.putConverter("sex", sexMap);
-
+        //性别转换可以使用Map，Map适合数据简单的映射，Converter适合对值进行复杂操作
+        Map<Integer, String> sexMap = new HashMap<>();
+        sexMap.put(1, "男生");
+        sexMap.put(0, "女生");
+        sheetInfo.putConverter("sex", sexMap);
         //日期格式转换为 yyyy-MM-dd
         sheetInfo.putConverter("birthday", DefaultHandlers.dateConverter);
 
-        SXSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfo);
         FileOutputStream file = new FileOutputStream("simpleConverter.xlsx");
-        workbook.write(file);
+        ExcelBuilder.writeOutputStream(sheetInfo, file);
         file.close();
-        workbook.dispose();
     }
 
     /**
      * 在simpleConverter的基础上
      * 使用#开头的虚拟字段定义 序号列 总分数列，并为虚拟字段添加Converter
-     *
-     * @throws Exception
      */
     @Test
     public void simpleConverterVirtual() throws Exception {
@@ -121,18 +99,14 @@ public class ExcelBuilderTest {
         //虚拟字段 #countGrade，通过转换器生成总分数
         sheetInfo.putConverter("#countGrade", countGradeConverter);
 
-        SXSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfo);
         FileOutputStream file = new FileOutputStream("simpleConverterVirtual.xlsx");
-        workbook.write(file);
+        ExcelBuilder.writeOutputStream(sheetInfo, file);
         file.close();
-        workbook.dispose();
     }
 
     /**
      * 在simpleConverterVirtual的基础上
      * 使用Counter，对 性别列 进行统计
-     *
-     * @throws Exception
      */
     @Test
     public void simpleConverterVirtualCounter() throws Exception {
@@ -156,18 +130,14 @@ public class ExcelBuilderTest {
         //统计男女人数
         sheetInfo.putCounter("sex", sexCounter);
 
-        SXSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfo);
         FileOutputStream file = new FileOutputStream("simpleConverterVirtualCounter.xlsx");
-        workbook.write(file);
+        ExcelBuilder.writeOutputStream(sheetInfo, file);
         file.close();
-        workbook.dispose();
     }
 
     /**
      * 在simpleConverterVirtualCounter基础上
      * 设置自定义style，对60分以下的分数标红，纯数字列自适应会遮挡，对身份证长度进行调整
-     *
-     * @throws Exception
      */
     @Test
     public void sheetStyle() throws Exception {
@@ -190,17 +160,13 @@ public class ExcelBuilderTest {
          */
         sheetInfo.setSheetStyle(new MySheetStyle(sheetInfo));
 
-        SXSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfo);
         FileOutputStream file = new FileOutputStream("sheetStyle.xlsx");
-        workbook.write(file);
+        ExcelBuilder.writeOutputStream(sheetInfo, file);
         file.close();
-        workbook.dispose();
     }
 
     /**
      * 两个sheet
-     *
-     * @throws Exception
      */
     @Test
     public void twoSheet() throws Exception {
@@ -229,11 +195,9 @@ public class ExcelBuilderTest {
         sheetInfos.add(sheetInfo1);
         sheetInfos.add(sheetInfo2);
 
-        SXSSFWorkbook workbook = ExcelBuilder.createWorkbook(sheetInfos);
         FileOutputStream file = new FileOutputStream("twoSheet.xlsx");
-        workbook.write(file);
+        ExcelBuilder.writeOutputStream(sheetInfos, file);
         file.close();
-        workbook.dispose();
     }
 
     /**
@@ -242,7 +206,7 @@ public class ExcelBuilderTest {
      * listIndex是value所属对象所在list的index
      * columnIndex是当前字段名所在classFieldNames的index
      */
-    static Converter sexConverter = (SheetInfo sheetInfo, Object value, int listIndex, int columnIndex) -> {
+    static Converter<Object, Object> sexConverter = (SheetInfo sheetInfo, Object value, int listIndex, int columnIndex) -> {
         /*
          *基本类型换被转换为对应的包装类型，这里int对应的是Integer，使用equals判断相等
          */
@@ -255,7 +219,7 @@ public class ExcelBuilderTest {
     /**
      * 总分数Converter
      */
-    static Converter countGradeConverter = (SheetInfo sheetInfo, Object value, int listIndex, int columnIndex) -> {
+    static Converter<Object, Object> countGradeConverter = (SheetInfo sheetInfo, Object value, int listIndex, int columnIndex) -> {
         /*
          * 虚拟字段传入的value是当前完整对象，在本例中是student对象
          */
@@ -272,7 +236,7 @@ public class ExcelBuilderTest {
      * 性别统计 Counter
      * result 保存了当前的合计结果，使用自定义类型要注意重写toString方法，以便在统计行显示自己想要的结果
      */
-    static Counter sexCounter = (SheetInfo sheetInfo, Object value, int listIndex, int columnIndex, Object result) -> {
+    static Counter<Object, Object> sexCounter = (SheetInfo sheetInfo, Object value, int listIndex, int columnIndex, Object result) -> {
         if (result == null) {
             result = new SexCountResult();
         }
@@ -292,9 +256,9 @@ public class ExcelBuilderTest {
     private Student genStudent(int i) {
         Student student = new Student();
         student.setName("张" + chinese[i % 11]);
-        student.setCardId("11111111111111111" + i % 10);
+        student.setCardId("123123123412341234");
         student.setSex(i % 2);
-        student.setBirthday(new Date(new Date().getTime() - 15 * 365 * 24 * 60 * 60 * 1000));
+        student.setBirthday(new Date());
         Grade grade = new Grade();
         grade.setChineseGrade(i % 10 * 10 + i % 10);
         grade.setMathGrade(i % 10 * 10 + i % 10);

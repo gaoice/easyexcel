@@ -19,21 +19,15 @@ public class MySheetStyle extends BoldSheetStyle {
     }
 
     /**
-     * 对分数列小于60分的单元格设置红色字体
-     *
-     * @param workbook
-     * @param listIndex
-     * @param columnIndex
-     * @param v
-     * @return
+     * 对 分数列小于60分的单元格 设置红色字体
      */
     @Override
     public CellStyle getListCellStyle(SXSSFWorkbook workbook, int listIndex, int columnIndex, Object v) {
-        String[] names = sheetInfo.getClassFieldNames();
+        String[] names = sheetInfo.getFieldNames();
         if ((names[columnIndex].equals("grade.chineseGrade")
                 || names[columnIndex].equals("grade.mathGrade")
                 || names[columnIndex].equals("grade.englishGrade"))
-                && (Double.valueOf(v.toString()) < 60)) {
+                && (v == null || Double.parseDouble(v.toString()) < 60)) {
             if (warnStyle == null) {
                 warnStyle = newSimpleStyle(workbook);
                 Font font = workbook.getFontAt(warnStyle.getFontIndexAsInt());
@@ -48,12 +42,10 @@ public class MySheetStyle extends BoldSheetStyle {
 
     /**
      * 长度处理，身份证列自适应长度会有少许遮挡，在这里处理补足
-     *
-     * @param columnMaxBytesLength
      */
     @Override
-    public void columnMaxBytesLengthHandler(int[] columnMaxBytesLength) {
-        String[] names = sheetInfo.getClassFieldNames();
+    public void handleColumnMaxBytesLength(int[] columnMaxBytesLength) {
+        String[] names = sheetInfo.getFieldNames();
         for (int i = 0; i < names.length; i++) {
             if (names[i].equals("cardId")) {
                 columnMaxBytesLength[i] += 4;
@@ -62,7 +54,7 @@ public class MySheetStyle extends BoldSheetStyle {
         /*
          * 父类方法对超过255的进行限制，否则会报错
          */
-        super.columnMaxBytesLengthHandler(columnMaxBytesLength);
+        super.handleColumnMaxBytesLength(columnMaxBytesLength);
     }
 
     /**

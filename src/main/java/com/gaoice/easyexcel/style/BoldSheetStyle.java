@@ -4,7 +4,9 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 /**
- * 对标题 列名 统计结果 字体加粗
+ * 对 标题 列名 统计结果 的字体加粗
+ *
+ * @author gaoice
  */
 public class BoldSheetStyle extends DefaultSheetStyle {
     @Override
