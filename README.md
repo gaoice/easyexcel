@@ -1,9 +1,7 @@
 # easyexcel
 ## 概述
 
-Excel快速生成工具
-
-在现有实体类的基础上构建最简单的Excel，代码只需4行。
+Excel 快速生成工具，几行代码即可把 `List` 集合生成为 Excel。
 
 
 
@@ -15,7 +13,7 @@ Excel快速生成工具
 <dependency>
     <groupId>com.gaoice</groupId>
     <artifactId>easyexcel</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 
@@ -29,7 +27,7 @@ Excel快速生成工具
 
 ## 新版本
 
-- v 1.1，支持 List<Map<?,?>> 类型，支持链式调用，详见 [MapListTests.java](https://github.com/gaoice/easyexcel/blob/master/src/test/java/com/gaoice/easyexcel/test/MapListTests.java) 。
+- v 1.1，支持 `List<Map<?,?>>` 类型，支持链式调用，详见 [MapListTests.java](https://github.com/gaoice/easyexcel/blob/master/src/test/java/com/gaoice/easyexcel/test/MapListTests.java) 。
 
 
 
@@ -65,4 +63,4 @@ sheetInfo.putConverter("sex",
 	(sheetInfo1, o, listIndex, columnIndex) -> o.equals(1) ? "男生" : "女生");
 ```
 
-完整的使用方法示例详见 [Test文件](https://github.com/gaoice/easyexcel/blob/master/src/test/java/com/gaoice/easyexcel/test/ExcelBuilderTests.java) 。
+完整的使用方法示例详见 [ExcelBuilderTests.java](https://github.com/gaoice/easyexcel/blob/master/src/test/java/com/gaoice/easyexcel/test/ExcelBuilderTests.java) 。
