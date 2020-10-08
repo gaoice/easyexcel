@@ -138,7 +138,7 @@ public class SheetBuilder {
      * 处理 title
      */
     private void buildTitle() {
-        if (title != null) {
+        if (title != null && !title.isEmpty()) {
             sheet.addMergedRegion(new CellRangeAddress(nextRowNum, nextRowNum, 0, columnCount - 1));
             row = sheet.createRow(nextRowNum++);
             cell = row.createCell(0);
