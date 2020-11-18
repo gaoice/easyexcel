@@ -1,7 +1,7 @@
 # easyexcel
 ## 概述
 
-Excel 快速生成工具，几行代码即可把 `List` 集合生成为 Excel。
+采用极简设计的 Excel 生成和读取工具，几行代码即可把 `List` 集合生成为 Excel 或者从 Excel 读取为 `List` 集合。
 
 
 
@@ -21,13 +21,13 @@ Excel 快速生成工具，几行代码即可把 `List` 集合生成为 Excel。
 
 ## Starter
 
-现在可以在 Spring Boot 中快速使用：[easyexcel-spring-boot-starter](https://github.com/gaoice/easyexcel-spring-boot-starter)
+现在可以在 Spring Boot 中快速使用：[easyexcel-spring-boot-starter](https://github.com/gaoice/easyexcel-spring-boot-starter) 
 
 
 
 ## 新版本
 
-- v 1.1，支持 `List<Map<?,?>>` 类型，支持链式调用，详见 [MapListTests.java](https://github.com/gaoice/easyexcel/blob/master/src/test/java/com/gaoice/easyexcel/test/MapListTests.java) 。
+- v 2.0，支持 Excel 的读取，详见 [ExcelReaderTests.java](https://github.com/gaoice/easyexcel/blob/master/src/test/java/com/gaoice/easyexcel/test/reader/ExcelReaderTests.java) 
 
 
 
@@ -36,31 +36,54 @@ Excel 快速生成工具，几行代码即可把 `List` 集合生成为 Excel。
 
 实体类：
 
-`Student{name, idcard, sex, ...}`
+`Student{name, idcard, gender, ...}`
 
-生成SXSSFWorkbook：
+#### 写 Excel
 
-```java
-String sheetName = "sheet name";
-String[] columnNames = {"姓名", "身份证号", "性别", ...};
-String[] classFieldNames = {"name", "idcard", "sex", ...};
-SXSSFWorkbook workbook = ExcelBuilder.createWorkbook(
-    new SheetInfo(sheetName, columnNames, classFieldNames, studentList));
-```
-
-web下直接写入HttpServletResponse的OutputStream中：
+生成 `SXSSFWorkbook`：
 
 ```java
-ExcelBuilder.writeOutputStream(
-    new SheetInfo(sheetName, columnNames, classFieldNames, studentList), 
-    response.getOutputStream());
+String[] classFieldNames = {"name", "idcard", "gender", ...};
+SXSSFWorkbook workbook = ExcelWriter.createWorkbook(new SheetInfo(classFieldNames, studentList));
 ```
 
-如果sex字段是int类型的，我们可以为sex字段添加一个Converter（Lambda表达式）在构建Excel时转换为中文：
+web 下直接写入 `HttpServletResponse` 的 `OutputStream` 中：
 
 ```java
-sheetInfo.putConverter("sex", 
-	(sheetInfo1, o, listIndex, columnIndex) -> o.equals(1) ? "男生" : "女生");
+ExcelWriter.writeOutputStream(new SheetInfo(classFieldNames, studentList), response.getOutputStream());
 ```
 
-完整的使用方法示例详见 [ExcelBuilderTests.java](https://github.com/gaoice/easyexcel/blob/master/src/test/java/com/gaoice/easyexcel/test/ExcelBuilderTests.java) 。
+如果 gender 字段是int类型的，我们可以为 gender 字段添加一个 `FieldValueConverter`（Lambda表达式）在构建 Excel 时转换为中文：
+
+```java
+sheetInfo.putFieldHandler("gender", (FieldValueConverter<Integer>) value -> 
+                          value == null ? null : value.equals(1) ? "男生" : "女生");
+```
+
+完整的使用方法示例详见 [ExcelWriterTests.java](https://github.com/gaoice/easyexcel/blob/master/src/test/java/com/gaoice/easyexcel/test/writer/ExcelWriterTests.java) 。
+
+#### 读 Excel
+
+简单的读取为 `List<Map>` ：
+
+```java
+List<Map<Integer, Object>> result = ExcelReader.parseList("example.xlsx");
+```
+
+映射为 `List<Student>` ：
+
+```java
+BeanConfig<Student> beanConfig = new BeanConfig<Student>().setTargetClass(Student.class)
+        .setFieldNames(new String[]{"name", "idcard", "gender", ...});
+
+List<Student> result = ExcelReader.parseList("example.xlsx", beanConfig);
+```
+
+为 gender 字段设置转换器，把中文映射为实体类的 `Integer` 类型：
+
+```java
+beanConfig.putConverter("gender", wrapper ->
+                wrapper.getStringValue() == null ? null : ("男生".equals(wrapper.getStringValue()) ? 1 : 0));
+```
+
+完整的使用方法示例详见 [ExcelReaderTests.java](https://github.com/gaoice/easyexcel/blob/master/src/test/java/com/gaoice/easyexcel/test/reader/ExcelReaderTests.java) 。
