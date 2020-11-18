@@ -1,9 +1,11 @@
-package com.gaoice.easyexcel;
+package com.gaoice.easyexcel.writer;
 
-import com.gaoice.easyexcel.data.Converter;
-import com.gaoice.easyexcel.data.Counter;
-import com.gaoice.easyexcel.style.SheetStyle;
 import com.gaoice.easyexcel.util.Assert;
+import com.gaoice.easyexcel.writer.handler.FieldHandler;
+import com.gaoice.easyexcel.writer.handler.FieldValueConverter;
+import com.gaoice.easyexcel.writer.handler.FieldValueCounter;
+import com.gaoice.easyexcel.writer.sheet.SheetBuilderContext;
+import com.gaoice.easyexcel.writer.style.SheetStyle;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import java.io.OutputStream;
@@ -16,27 +18,47 @@ import java.util.Map;
  * @author gaoice
  */
 public class SheetInfo {
+
     private String sheetName;
+
     private String title;
+
     /**
      * 列名
      */
     private String[] columnNames;
+
     /**
      * 列名对应的类字段名
      */
     private String[] fieldNames;
 
     private List<?> list;
+
     private SheetStyle sheetStyle;
-    private Map<String, Object> converterMap;
-    private Map<String, Object> counterMap;
+
+    private final Map<String, FieldHandler<?>> fieldHandlerMap = new HashMap<>();
+
     /**
-     * SheetInfo 被使用后，fieldCache 会缓存，相同的 fieldNames 可以重复使用 SheetInfo 以提高效率
+     * SheetInfo 被使用后，fieldCache 会缓存，可以重复使用 SheetInfo 以提高效率
      */
     private List<List<Field>> fieldCache;
 
     public SheetInfo() {
+    }
+
+    public SheetInfo(String[] fieldNames, List<?> list) {
+        this.sheetName = "default";
+        this.columnNames = fieldNames;
+        this.fieldNames = fieldNames;
+        this.list = list;
+    }
+
+    public SheetInfo(String sheetName, String[] fieldNames, List<?> list) {
+        this.sheetName = sheetName;
+        this.columnNames = fieldNames;
+        this.fieldNames = fieldNames;
+        this.list = list;
     }
 
     public SheetInfo(String sheetName, String[] columnNames, String[] fieldNames, List<?> list) {
@@ -55,58 +77,28 @@ public class SheetInfo {
     }
 
     /**
-     * 为 fieldName列 设置单元格转换器，Map键值对
+     * 为 fieldName列 设置处理器
      *
-     * @param fieldName  字段名
-     * @param dictionary 数据字典
+     * @param fieldName    字段名
+     * @param fieldHandler 处理器
      */
-    public SheetInfo putConverter(String fieldName, Map<?, ?> dictionary) {
+    public SheetInfo putFieldHandler(String fieldName, FieldHandler<?> fieldHandler) {
         Assert.notNull(fieldName, "fieldName must be non-null");
-        Assert.notNull(dictionary, "dictionary must be non-null");
-        if (converterMap == null) {
-            converterMap = new HashMap<>();
-        }
+        Assert.notNull(fieldHandler, "fieldHandler must be non-null");
         if (isAtFieldNames(fieldName)) {
-            converterMap.put(fieldName, dictionary);
+            fieldHandlerMap.put(fieldName, fieldHandler);
         } else {
             throw new IllegalArgumentException("no such fieldName, please put in array fieldNames");
         }
         return this;
     }
 
-    /**
-     * 为 fieldName列 设置单元格转换器，函数式接口
-     *
-     * @param fieldName 字段名
-     * @param converter 转换器
-     */
-    public SheetInfo putConverter(String fieldName, Converter<?, ?> converter) {
+    public <V> SheetInfo putFieldHandler(String fieldName, FieldValueConverter<V> converter, FieldValueCounter<V> counter) {
         Assert.notNull(fieldName, "fieldName must be non-null");
         Assert.notNull(converter, "converter must be non-null");
-        if (converterMap == null) {
-            converterMap = new HashMap<>();
-        }
+        Assert.notNull(counter, "counter must be non-null");
         if (isAtFieldNames(fieldName)) {
-            converterMap.put(fieldName, converter);
-        } else {
-            throw new IllegalArgumentException("no such fieldName, please put in array fieldNames");
-        }
-        return this;
-    }
-
-    /**
-     * 为 fieldName列 设置列计数器，函数式接口
-     *
-     * @param fieldName 字段名
-     * @param counter   计数器
-     */
-    public SheetInfo putCounter(String fieldName, Counter<?, ?> counter) {
-        Assert.notNull(fieldName, "fieldName must be non-null");
-        if (counterMap == null) {
-            counterMap = new HashMap<>();
-        }
-        if (isAtFieldNames(fieldName)) {
-            counterMap.put(fieldName, counter);
+            fieldHandlerMap.put(fieldName, new FieldHandlerAdapter<>(converter, counter));
         } else {
             throw new IllegalArgumentException("no such fieldName, please put in array fieldNames");
         }
@@ -114,16 +106,14 @@ public class SheetInfo {
     }
 
     private boolean isAtFieldNames(String fieldName) {
-        boolean b = false;
         if (fieldNames != null) {
             for (String name : fieldNames) {
                 if (name.equals(fieldName)) {
-                    b = true;
-                    break;
+                    return true;
                 }
             }
         }
-        return b;
+        return false;
     }
 
     public String getSheetName() {
@@ -196,12 +186,8 @@ public class SheetInfo {
         return this;
     }
 
-    public Map<String, Object> getConverterMap() {
-        return converterMap;
-    }
-
-    public Map<String, Object> getCounterMap() {
-        return counterMap;
+    public Map<String, FieldHandler<?>> getFieldHandlerMap() {
+        return fieldHandlerMap;
     }
 
     public List<List<Field>> getFieldCache() {
@@ -213,10 +199,29 @@ public class SheetInfo {
     }
 
     public SXSSFWorkbook build() throws Exception {
-        return ExcelBuilder.createWorkbook(this);
+        return ExcelWriter.createWorkbook(this);
     }
 
     public void build(OutputStream out) throws Exception {
-        ExcelBuilder.writeOutputStream(this, out);
+        ExcelWriter.writeOutputStream(this, out);
+    }
+
+    /**
+     * FieldConverter FieldCounter
+     */
+    public static class FieldHandlerAdapter<V> implements FieldHandler<V> {
+        private final FieldValueConverter<V> converter;
+        private final FieldValueCounter<V> counter;
+
+        public FieldHandlerAdapter(FieldValueConverter<V> converter, FieldValueCounter<V> counter) {
+            this.converter = converter;
+            this.counter = counter;
+        }
+
+        @Override
+        public void handle(SheetBuilderContext<V> context) {
+            context.setConvertedValue(converter.convert(context.getValue()));
+            context.setCountedResult(counter.count(context));
+        }
     }
 }

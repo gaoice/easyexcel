@@ -1,5 +1,6 @@
-package com.gaoice.easyexcel.style;
+package com.gaoice.easyexcel.writer.style;
 
+import com.gaoice.easyexcel.writer.sheet.SheetBuilderContext;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
@@ -20,56 +21,49 @@ public class DefaultSheetStyle implements SheetStyle {
     protected CellStyle columnCountCellStyle;
 
     @Override
-    public CellStyle getTitleCellStyle(SXSSFWorkbook workbook) {
+    public CellStyle getTitleCellStyle(SheetBuilderContext<?> context) {
         if (titleCellStyle != null) {
             return titleCellStyle;
         }
-        titleCellStyle = newSimpleStyle(workbook);
+        titleCellStyle = newSimpleStyle(context);
         titleCellStyle.setWrapText(false);
-        Font font = workbook.getFontAt(titleCellStyle.getFontIndexAsInt());
+        Font font = context.getWorkbook().getFontAt(titleCellStyle.getFontIndexAsInt());
         font.setFontHeightInPoints((short) 22);
         return titleCellStyle;
     }
 
     @Override
-    public CellStyle getColumnNamesCellStyle(SXSSFWorkbook workbook, int index) {
+    public CellStyle getColumnNamesCellStyle(SheetBuilderContext<?> context) {
         if (columnNamesCellStyle != null) {
             return columnNamesCellStyle;
         }
-        columnNamesCellStyle = newSimpleStyle(workbook);
+        columnNamesCellStyle = newSimpleStyle(context);
         return columnNamesCellStyle;
     }
 
     @Override
-    public CellStyle getListCellStyle(SXSSFWorkbook workbook, int listIndex, int columnIndex, Object v) {
+    public CellStyle getListCellStyle(SheetBuilderContext<?> context) {
         if (listCellStyle != null) {
             return listCellStyle;
         }
-        listCellStyle = newSimpleStyle(workbook);
+        listCellStyle = newSimpleStyle(context);
         return listCellStyle;
     }
 
     @Override
-    public CellStyle getColumnCountCellStyle(SXSSFWorkbook workbook, int columnIndex, Object v) {
+    public CellStyle getColumnCountCellStyle(SheetBuilderContext<?> context) {
         if (columnCountCellStyle != null) {
             return columnCountCellStyle;
         }
-        columnCountCellStyle = newSimpleStyle(workbook);
+        columnCountCellStyle = newSimpleStyle(context);
         return columnCountCellStyle;
     }
 
     /**
-     * 最大值255
-     *
-     * @param columnMaxBytesLength 每列单元格最长的字节长度
+     * 可以自定义设置每列单元格最长的字节长度
      */
     @Override
-    public void handleColumnMaxBytesLength(int[] columnMaxBytesLength) {
-        for (int i = 0; i < columnMaxBytesLength.length; i++) {
-            if (columnMaxBytesLength[i] > 255) {
-                columnMaxBytesLength[i] = 255;
-            }
-        }
+    public void handleColumnMaxBytesLength(SheetBuilderContext<?> context) {
     }
 
     @Override
@@ -78,6 +72,10 @@ public class DefaultSheetStyle implements SheetStyle {
         columnNamesCellStyle = null;
         listCellStyle = null;
         columnCountCellStyle = null;
+    }
+
+    public CellStyle newSimpleStyle(SheetBuilderContext<?> context) {
+        return newSimpleStyle(context.getWorkbook());
     }
 
     public CellStyle newSimpleStyle(SXSSFWorkbook workbook) {

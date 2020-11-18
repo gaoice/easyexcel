@@ -1,13 +1,11 @@
-package com.gaoice.easyexcel.test;
+package com.gaoice.easyexcel.test.writer;
 
-import com.gaoice.easyexcel.ExcelBuilder;
-import com.gaoice.easyexcel.data.Converter;
+import com.gaoice.easyexcel.writer.ExcelWriter;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.FileOutputStream;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,18 +49,11 @@ public class MapListTests {
 
         FileOutputStream file = new FileOutputStream("mapList.xlsx");
 
-        ExcelBuilder.builder()
-                .setSheetName(sheetName)
+        ExcelWriter.builder().setSheetName(sheetName)
                 .setTitle(title)
                 .setColumnNames(columnNames)
                 .setFieldNames(fieldNames)
                 .setList(mapList)
-                .putConverter(fieldNames[2], (Converter<LocalDateTime, String>) (sheetInfo1, value, listIndex, columnIndex) -> {
-                    if (value != null) {
-                        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(value);
-                    }
-                    return "未知";
-                })
                 .build(file);
 
         file.close();

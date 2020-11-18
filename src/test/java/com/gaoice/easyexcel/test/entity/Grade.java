@@ -1,31 +1,32 @@
 package com.gaoice.easyexcel.test.entity;
 
 public class Grade {
-    int chineseGrade;
-    float mathGrade;
-    double englishGrade;
 
-    public int getChineseGrade() {
+    Integer chineseGrade;
+    Float mathGrade;
+    Double englishGrade;
+
+    public Integer getChineseGrade() {
         return chineseGrade;
     }
 
-    public void setChineseGrade(int chineseGrade) {
+    public void setChineseGrade(Integer chineseGrade) {
         this.chineseGrade = chineseGrade;
     }
 
-    public float getMathGrade() {
+    public Float getMathGrade() {
         return mathGrade;
     }
 
-    public void setMathGrade(float mathGrade) {
+    public void setMathGrade(Float mathGrade) {
         this.mathGrade = mathGrade;
     }
 
-    public double getEnglishGrade() {
+    public Double getEnglishGrade() {
         return englishGrade;
     }
 
-    public void setEnglishGrade(double englishGrade) {
+    public void setEnglishGrade(Double englishGrade) {
         this.englishGrade = englishGrade;
     }
 }

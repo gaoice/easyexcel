@@ -1,6 +1,12 @@
 package com.gaoice.easyexcel.test.entity;
 
-public class SexCountResult {
+/**
+ * 性别统计结果
+ *
+ * @author gaoice
+ */
+public class GenderCountResult {
+
     int manNum = 0;
     int womanNum = 0;
 

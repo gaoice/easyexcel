@@ -3,12 +3,14 @@ package com.gaoice.easyexcel.test.entity;
 import java.util.Date;
 
 public class Student {
+
     Long id;
     String name;
     String cardId;
-    int sex;
+    Integer gender;
     Date birthday;
     String address;
+
     Grade grade;
 
     public Long getId() {
@@ -35,12 +37,12 @@ public class Student {
         this.cardId = cardId;
     }
 
-    public int getSex() {
-        return sex;
+    public Integer getGender() {
+        return gender;
     }
 
-    public void setSex(int sex) {
-        this.sex = sex;
+    public void setGender(Integer gender) {
+        this.gender = gender;
     }
 
     public Date getBirthday() {
