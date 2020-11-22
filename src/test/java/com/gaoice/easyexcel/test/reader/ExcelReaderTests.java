@@ -64,9 +64,9 @@ public class ExcelReaderTests {
         assert result.getResult().size() == 10000;
     }
 
-    public static CellConverter DATE_CONVERTER = wrapper -> {
+    public static CellConverter DATE_CONVERTER = context -> {
         try {
-            String value = wrapper.getStringValue();
+            String value = context.getStringValue();
             return value == null ? null : new SimpleDateFormat("yyyy-MM-dd").parse(value);
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,8 +74,8 @@ public class ExcelReaderTests {
         }
     };
 
-    public static CellConverter GENDER_CONVERTER = wrapper -> {
-        String value = wrapper.getStringValue();
+    public static CellConverter GENDER_CONVERTER = context -> {
+        String value = context.getStringValue();
         if ("男生".equals(value)) {
             return 1;
         }

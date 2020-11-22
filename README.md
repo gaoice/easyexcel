@@ -82,8 +82,8 @@ List<Student> result = ExcelReader.parseList("example.xlsx", beanConfig);
 为 gender 字段设置转换器，把中文映射为实体类的 `Integer` 类型：
 
 ```java
-beanConfig.putConverter("gender", wrapper ->
-                wrapper.getStringValue() == null ? null : ("男生".equals(wrapper.getStringValue()) ? 1 : 0));
+beanConfig.putConverter("gender", context ->
+                context.getStringValue() == null ? null : ("男生".equals(context.getStringValue()) ? 1 : 0));
 ```
 
 完整的使用方法示例详见 [ExcelReaderTests.java](https://github.com/gaoice/easyexcel/blob/master/src/test/java/com/gaoice/easyexcel/test/reader/ExcelReaderTests.java) 。

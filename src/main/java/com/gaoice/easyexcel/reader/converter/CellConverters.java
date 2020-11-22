@@ -18,56 +18,56 @@ public abstract class CellConverters {
         return Double.valueOf(value).intValue();
     };
 
-    public static CellConverter DOUBLE = wrapper -> {
-        String value = wrapper.getStringValue();
+    public static CellConverter DOUBLE = context -> {
+        String value = context.getStringValue();
         if (StringUtils.isBlank(value)) {
             return null;
         }
         return Double.valueOf(value);
     };
 
-    public static CellConverter FLOAT = wrapper -> {
-        String value = wrapper.getStringValue();
+    public static CellConverter FLOAT = context -> {
+        String value = context.getStringValue();
         if (StringUtils.isBlank(value)) {
             return null;
         }
         return Double.valueOf(value).floatValue();
     };
 
-    public static CellConverter LONG = wrapper -> {
-        String value = wrapper.getStringValue();
+    public static CellConverter LONG = context -> {
+        String value = context.getStringValue();
         if (StringUtils.isBlank(value)) {
             return null;
         }
         return Double.valueOf(value).longValue();
     };
 
-    public static CellConverter SHORT = wrapper -> {
-        String value = wrapper.getStringValue();
+    public static CellConverter SHORT = context -> {
+        String value = context.getStringValue();
         if (StringUtils.isBlank(value)) {
             return null;
         }
         return Double.valueOf(value).shortValue();
     };
 
-    public static CellConverter BOOLEAN = wrapper -> {
-        String value = wrapper.getStringValue();
+    public static CellConverter BOOLEAN = context -> {
+        String value = context.getStringValue();
         if (StringUtils.isBlank(value)) {
             return null;
         }
         return Boolean.valueOf(value);
     };
 
-    public static CellConverter BYTE = wrapper -> {
-        String value = wrapper.getStringValue();
+    public static CellConverter BYTE = context -> {
+        String value = context.getStringValue();
         if (StringUtils.isBlank(value)) {
             return null;
         }
         return Byte.valueOf(value);
     };
 
-    public static CellConverter CHAR = wrapper -> {
-        String value = wrapper.getStringValue();
+    public static CellConverter CHAR = context -> {
+        String value = context.getStringValue();
         if (StringUtils.isBlank(value)) {
             return null;
         }

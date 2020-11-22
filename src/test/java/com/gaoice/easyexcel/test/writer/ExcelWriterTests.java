@@ -173,12 +173,12 @@ public class ExcelWriterTests {
      * 此处实现 性别 转换 + 统计
      * GenderCountResult 保存了统计结果，使用自定义结果类型要注意重写 toString 方法，以便在统计行显示自己想要的结果
      */
-    static FieldHandler<Integer> GENDER_HANDLER = (wrapper) -> {
-        GenderCountResult result = (GenderCountResult) wrapper.getCountedResult();
+    static FieldHandler<Integer> GENDER_HANDLER = (context) -> {
+        GenderCountResult result = (GenderCountResult) context.getCountedResult();
         if (result == null) {
             result = new GenderCountResult();
         }
-        Integer v = wrapper.getValue();
+        Integer v = context.getValue();
         String s = null;
         if (v != null) {
             if (v.equals(1)) {
@@ -189,8 +189,8 @@ public class ExcelWriterTests {
                 s = "女生";
             }
         }
-        wrapper.setConvertedValue(s);
-        wrapper.setCountedResult(result);
+        context.setConvertedValue(s);
+        context.setCountedResult(result);
     };
 
     /**
