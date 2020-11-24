@@ -1,6 +1,7 @@
 package com.gaoice.easyexcel.writer;
 
 import com.gaoice.easyexcel.writer.sheet.SheetBuilder;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import java.io.OutputStream;
@@ -36,20 +37,24 @@ public class ExcelWriter {
 
     public static SXSSFWorkbook createWorkbook(SheetInfo sheetInfo) throws Exception {
         SXSSFWorkbook workbook = new SXSSFWorkbook();
-        createSheet(workbook, sheetInfo);
+        buildSheet(workbook, sheetInfo);
         return workbook;
     }
 
     public static SXSSFWorkbook createWorkbook(List<SheetInfo> sheetInfos) throws Exception {
         SXSSFWorkbook workbook = new SXSSFWorkbook();
         for (SheetInfo sheetInfo : sheetInfos) {
-            createSheet(workbook, sheetInfo);
+            buildSheet(workbook, sheetInfo);
         }
         return workbook;
     }
 
-    public static void createSheet(SXSSFWorkbook workbook, SheetInfo sheetInfo) throws IllegalAccessException, UnsupportedEncodingException, NoSuchFieldException {
+    public static void buildSheet(SXSSFWorkbook workbook, SheetInfo sheetInfo) throws IllegalAccessException, UnsupportedEncodingException, NoSuchFieldException {
         SheetBuilder.builder().buildSheet(workbook, sheetInfo);
+    }
+
+    public static SXSSFSheet createSheet(SXSSFWorkbook workbook, SheetInfo sheetInfo) throws IllegalAccessException, UnsupportedEncodingException, NoSuchFieldException {
+        return SheetBuilder.builder().buildSheet(workbook, sheetInfo);
     }
 
     public static SheetInfo builder() {

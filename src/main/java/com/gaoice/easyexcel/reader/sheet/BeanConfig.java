@@ -24,7 +24,7 @@ public class BeanConfig<T> extends SheetConfig {
     /**
      * 列转换器，如将 excel 中读取的日期转换为 Date 字段类型
      */
-    private Map<String, CellConverter> converterMap = new HashMap<>();
+    private final Map<String, CellConverter> converterMap = new HashMap<>();
 
     /**
      * 为 fieldName 设置单元格转换器
