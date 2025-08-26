@@ -52,7 +52,7 @@
         <!-- dependency -->
         <poi.version>4.1.0</poi.version>
         <junit.version>4.13.1</junit.version>
-        <commons-lang3.version>3.11</commons-lang3.version>
+        <commons-lang3.version>3.18.0</commons-lang3.version>
         <commons-collections4.version>4.4</commons-collections4.version>
     </properties>
 
